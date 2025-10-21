@@ -1,0 +1,52 @@
+[project]
+name = "lm-proxy-db-connector"
+version = "1.0.0"
+description = "Database connector & database logging for LM-Proxy"
+readme = "README.md"
+keywords = ["llm", "large language models", "ai", "gpt", "openai", "proxy", "http", "proxy-server", "database", "logging", "RDBMS", "PostgreSQL", "DB", "SQLAlchemy", "MySQL", "SQLite"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "lm-proxy",
+    "SQLAlchemy~=2.0.0",
+]
+
+requires-python = ">=3.11,<4"
+
+authors = [
+    { name = "Vitalii Stepanenko", email = "mail@vitalii.in" },
+]
+maintainers = [
+    { name = "Vitalii Stepanenko", email = "mail@vitalii.in" },
+]
+license = { file = "LICENSE" }
+
+[project.urls]
+"Source Code" = "https://github.com/Nayjest/lm-proxy-db-connector"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = true
+packages = [{ include = "lm_proxy_db_connector"}]
+
+[tool.poetry.group.test.dependencies]
+pytest = "~=8.4.2"
+pytest-asyncio = "~=1.2.0"
+pytest-cov = "~7.0.0"
+pycopg2_binary = "~=2.9.11"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = [
+    "tests",
+]
