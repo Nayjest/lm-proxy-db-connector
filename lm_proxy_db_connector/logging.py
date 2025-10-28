@@ -93,6 +93,7 @@ class DBLogWriter(AbstractLogWriter):
             db.rollback()
             raise
 
+
 @dataclass
 class DBLogger:
     """
