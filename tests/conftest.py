@@ -43,7 +43,7 @@ def server_config(request):
     with engine.begin() as conn:
         conn.execute(text("DROP TABLE IF EXISTS llm_logs;"))
 
-    test_config_path = Path("tests/config.toml")
+    test_config_path = Path("tests/config.yml")
     server_process = subprocess.Popen(
         [
             sys.executable,
@@ -53,6 +53,7 @@ def server_config(request):
             str(test_config_path),
             "--env",
             str(test_env_path),
+            "--debug"
         ],
     )
     time.sleep(4)

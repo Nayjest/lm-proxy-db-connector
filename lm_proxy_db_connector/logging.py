@@ -1,14 +1,15 @@
 """
 lm_proxy_db_connector - Minimalistic database connector for LM Proxy
 """
-
 from typing import Optional, Dict, Any
 from dataclasses import dataclass, field
 
 import sqlalchemy
-from microcore.utils import resolve_callable
 from sqlalchemy.exc import SQLAlchemyError
-from lm_proxy.loggers import AbstractLogWriter
+from microcore.utils import resolve_callable
+from lm_proxy.loggers import AbstractLogWriter, BaseLogger, LogEntryTransformer
+from lm_proxy.base_types import RequestContext
+
 from . import db_session, db_engine
 
 
@@ -22,8 +23,8 @@ TYPE_MAP = {
     "float": sqlalchemy.Float,
 }
 
-DEFAULT_COLUMNS = {
-    "id": {"type": "id", "primary_key": True, "autoincrement": True},
+_DEFAULT_COLUMNS = {
+    "id": {"type": "string", "primary_key": True, "length": 36},
     "request": {"type": "json", "nullable": False},
     "response": {"type": "text", "nullable": True},
     "error": {"type": "text", "nullable": True},
@@ -33,14 +34,17 @@ DEFAULT_COLUMNS = {
     "remote_addr": {"type": "string", "length": 255, "nullable": True},
     "created_at": {"type": "datetime", "default": "now"},
     "duration": {"type": "float", "nullable": True},
-    #
-    "prompt_tokens": {"type": "integer", "nullable": True},
-    "completion_tokens": {"type": "integer", "nullable": True},
+    "user_info": {"type": "json", "nullable": True},
+    "extra": {"type": "json", "nullable": True},
 }
 
 
 @dataclass
 class DBLogWriter(AbstractLogWriter):
+    """
+    Database log writer that writes logged data into a specified table.
+    Creates the table if it does not exist and if create_table is True.
+    """
     table_name: str
     schema: Optional[str] = None
     columns: Optional[Dict[str, Dict[str, Any]]] = None
@@ -49,7 +53,7 @@ class DBLogWriter(AbstractLogWriter):
 
     def __post_init__(self) -> None:
         if self.columns is None:
-            self.columns = DEFAULT_COLUMNS
+            self.columns = _DEFAULT_COLUMNS
 
         metadata = sqlalchemy.MetaData(schema=self.schema)
         engine = db_engine()
@@ -88,3 +92,37 @@ class DBLogWriter(AbstractLogWriter):
         except SQLAlchemyError:
             db.rollback()
             raise
+
+@dataclass
+class DBLogger:
+    """
+    Database-backed LLM request logger.
+    This class combines LogEntryTransformer and DBLogWriter
+    allowing to simplify logger configuration and avoid listing fields twice.
+    The `columns` parameter defines both the database table schema
+    and the mapping from RequestContext to logged attributes (column.src field).
+    """
+    table_name: str = "llm_requests"
+    schema: Optional[str] = None
+    columns: Optional[Dict[str, Dict[str, Any]]] = None
+    create_table: bool = field(default=True)
+    _logger: BaseLogger = field(init=False, repr=False)
+
+    def __post_init__(self):
+        mapping = dict()
+        for col_name, col_spec in self.columns.items():
+            mapping[col_name] = col_spec.pop("src", col_name)
+        log_writer = DBLogWriter(
+            table_name=self.table_name,
+            schema=self.schema,
+            columns=self.columns,
+            create_table=self.create_table,
+        )
+        log_transformer = LogEntryTransformer(**mapping)
+        self._logger = BaseLogger(
+            log_writer=log_writer,
+            entry_transformer=log_transformer,
+        )
+
+    def __call__(self, request_context: RequestContext):
+        self._logger(request_context)

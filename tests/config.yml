@@ -1,0 +1,80 @@
+port: "env:PORT"
+host: "127.0.0.1"
+
+connections:
+  openai:
+    api_type: "open_ai"
+    api_base: "https://api.openai.com/v1/"
+    api_key: "env:OPENAI_API_KEY"
+  google:
+    api_type: "google_ai_studio"
+    api_key: "env:GOOGLE_API_KEY"
+  anthropic:
+    api_type: "anthropic"
+    api_key: "env:ANTHROPIC_API_KEY"
+
+routing:
+  "gpt*": "openai.*"
+  "claude*": "anthropic.*"
+  "gemini*": "google.*"
+  "*": "openai.gpt-5"
+
+groups:
+  default:
+    api_keys:
+      - "py-test-key"
+
+loggers:
+  - class: "lm_proxy_db_connector.logging.DBLogger"
+    table_name: "llm_logs"
+    columns:
+      id:
+        type: string
+        primary_key: true
+        length: 36
+      request:
+        type: json
+        src: request.messages
+      response:
+        type: text
+        nullable: true
+      error:
+        type: text
+        nullable: true
+      group:
+        type: string
+        length: 255
+      connection:
+        type: string
+        length: 255
+      api_key_id:
+        type: string
+        length: 255
+      remote_addr:
+        type: string
+        length: 255
+        nullable: true
+      created_at:
+        type: datetime
+        default: now
+      duration:
+        type: float
+        nullable: true
+      user_info:
+        type: json
+        nullable: true
+      completion_tokens:
+        type: integer
+        src: response.usage.completion_tokens
+        nullable: true
+      prompt_tokens:
+        type: integer
+        src: response.usage.prompt_tokens
+        nullable: true
+      extra:
+        type: json
+        nullable: true
+components:
+  db:
+    dsn: "env:DB_URL"
+    class: "lm_proxy_db_connector.Component"
