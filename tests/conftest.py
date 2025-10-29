@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from typing import Any
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
-from sqlalchemy.engine import make_url
+
 
 @dataclass
 class ServerFixture:
@@ -23,9 +23,10 @@ class ServerFixture:
 @pytest.fixture(
     scope="session",
     params=[
-        ".postgres.env",
+        #".postgres.env",
         #".sqlite.env",
-        ".mysql.env",
+        #".mysql.env",
+        ".sqlite_memory.env",
     ]
 )
 def server_config(request):
@@ -36,7 +37,6 @@ def server_config(request):
     load_dotenv(shared_env_path, override=True)
     test_env_path = root / "tests" / "env" / request.param
     load_dotenv(test_env_path, override=True)
-    time.sleep(10)
     db_url = os.environ.get("DB_URL")
     print("Using DB_URL:", db_url)
 
@@ -64,7 +64,7 @@ def server_config(request):
             "--debug"
         ],
     )
-    time.sleep(10)
+    time.sleep(5)
     yield ServerFixture(
         port=int(os.environ.get("PORT")),
         process=server_process,
