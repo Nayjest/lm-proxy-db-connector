@@ -10,9 +10,9 @@ A minimalistic SQLAlchemy-based database connector for [LM-Proxy](https://github
 
 ## Features
 
-- 📊 Database connection management in the LM-Proxt configuration with SQLAlchemy
+- 📊 Database connection management in the LM-Proxy configuration with SQLAlchemy
 - 📝 Includes a component for logging of LLM requests and responses to relational databases
-- 🔄 Support for PostgreSQL, MySQL/MariaDB, SQLite, Oracle, Microsoft SQL Server and other SQLAlchemy-supported databases
+- 🔄 Support for PostgreSQL, MySQL/MariaDB, SQLite, Oracle, Microsoft SQL Server and many other databases
 - 🛡️ Thread-safe implementation
 
 ## Installation
