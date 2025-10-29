@@ -1,0 +1,21 @@
+name: Code Style
+
+on: [push]
+
+jobs:
+  cs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+      - name: Install dependencies
+        run: |
+          pip install flake8 pylint
+          pip install -e .
+
+      - name: Run flake8
+        run: flake8 .
+      - name: Run pylint
+        run: pylint lm_proxy_db_connector
