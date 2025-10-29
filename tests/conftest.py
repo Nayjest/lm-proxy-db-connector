@@ -26,7 +26,7 @@ class ServerFixture:
         #".postgres.env",
         #".sqlite.env",
         #".mysql.env",
-        ".sqlite_memory.env",
+        ".sqlite.mem.env",
     ]
 )
 def server_config(request):
