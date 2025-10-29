@@ -36,7 +36,7 @@ def server_config(request):
     load_dotenv(shared_env_path, override=True)
     test_env_path = root / "tests" / "env" / request.param
     load_dotenv(test_env_path, override=True)
-
+    time.sleep(10)
     db_url = os.environ.get("DB_URL")
     print("Using DB_URL:", db_url)
 
