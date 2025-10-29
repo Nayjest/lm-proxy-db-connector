@@ -45,6 +45,8 @@ pytest-asyncio = "~=1.2.0"
 pytest-cov = "~7.0.0"
 psycopg2-binary = "~=2.9.11"
 pyyaml = "~=6.0.3"
+google-generativeai = "~=0.8.5"
+anthropic = "~=0.57.1"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = [

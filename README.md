@@ -6,14 +6,14 @@
 [![Code Style](https://github.com/Nayjest/lm-proxy-db-connector/actions/workflows/code-style.yml/badge.svg)](https://github.com/Nayjest/lm-proxy-db-connector/actions)
 [![Build Status](https://github.com/Nayjest/lm-proxy-db-connector/actions/workflows/tests.yml/badge.svg)](https://github.com/Nayjest/lm-proxy-db-connector/actions)
 
-A minimalistic SQLAlchemy-based database connector for [LM Proxy](https://github.com/Nayjest/lm-proxy).
+A minimalistic SQLAlchemy-based database connector for [LM-Proxy](https://github.com/Nayjest/lm-proxy).
 
 Includes component logging of LLM requests and responses.
 
 ## Features
 
 - 📊 Database connection management with SQLAlchemy
-- 📝 Includes component for Logging of LLM requests and responses to various databases
+- 📝 Includes a component for Logging of LLM requests and responses to various databases
 - 🔄 Support for SQLite, PostgreSQL, MySQL, and other SQLAlchemy-supported databases
 - 🛡️ Thread-safe implementation
 
