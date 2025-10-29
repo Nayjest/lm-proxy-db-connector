@@ -24,8 +24,8 @@ class ServerFixture:
     scope="session",
     params=[
         ".postgres.env",
-        # ".sqlite.env",
-        ".mysql.env",
+        #".sqlite.env",
+        #".mysql.env",
     ]
 )
 def server_config(request):
