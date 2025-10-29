@@ -15,7 +15,8 @@
         ".patch",
         "node_modules",
         "package-lock.json",
-        "dist"
+        "dist",
+        "storage"
     ],
     "bot_personality": ""
 }

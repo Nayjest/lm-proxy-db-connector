@@ -34,13 +34,13 @@ jobs:
     - name: Test with pytest
       if: matrix.python-version != '3.13'
       env:
-        LLM_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         pytest
     - name: Test with pytest +coverage
       if: matrix.python-version == '3.13'
       env:
-        LLM_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         pytest --cov=lm_proxy_db_connector --cov-report=xml
     - name: Generate coverage badge
