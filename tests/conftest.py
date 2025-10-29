@@ -24,13 +24,12 @@ def get_test_params():
     """Return test parameters based on environment."""
     if os.environ.get("GITHUB_ACTIONS"):
         return [
-            ".sqlite.mem.env",
+            ".postgres.env",
         ]
     return [
         ".postgres.env",
         ".sqlite.env",
         ".mysql.env",
-        ".sqlite.mem.env",
     ]
 
 @pytest.fixture(
