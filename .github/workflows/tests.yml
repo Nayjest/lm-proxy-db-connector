@@ -35,12 +35,16 @@ jobs:
       if: matrix.python-version != '3.13'
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       run: |
         pytest
     - name: Test with pytest +coverage
       if: matrix.python-version == '3.13'
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       run: |
         pytest --cov=lm_proxy_db_connector --cov-report=xml
     - name: Generate coverage badge

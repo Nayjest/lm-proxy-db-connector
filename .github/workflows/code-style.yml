@@ -14,3 +14,5 @@ jobs:
         run: pip install --upgrade pip flake8 pylint
       - name: Run flake8
         run: flake8 .
+      - name: Run pylint
+        run: pylint lm_proxy_db_connector
