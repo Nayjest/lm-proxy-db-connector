@@ -23,9 +23,9 @@ class ServerFixture:
 @pytest.fixture(
     scope="session",
     params=[
+        ".postgres.env",
         ".sqlite.env",
         ".mysql.env",
-        ".postgres.env"
     ]
 )
 def server_config(request):
@@ -36,6 +36,7 @@ def server_config(request):
     load_dotenv(shared_env_path, override=True)
     test_env_path = root / "tests" / "env" / request.param
     load_dotenv(test_env_path, override=True)
+    Path("storage").mkdir(parents=True, exist_ok=True)
 
     db_url = os.environ.get("DB_URL")
     print("Using DB_URL:", db_url)

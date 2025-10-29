@@ -47,6 +47,7 @@ psycopg2-binary = "~=2.9.11"
 pyyaml = "~=6.0.3"
 google-generativeai = "~=0.8.5"
 anthropic = "~=0.57.1"
+pymysql = "~=1.1.1"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = [
