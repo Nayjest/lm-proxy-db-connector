@@ -20,14 +20,11 @@ class ServerFixture:
     db_url: str = field(default=None)
 
 
-Path(make_url("sqlite:///storage/sqlite.db").database).parent.mkdir(parents=True, exist_ok=True)
-
-
 @pytest.fixture(
     scope="session",
     params=[
         ".postgres.env",
-        ".sqlite.env",
+        # ".sqlite.env",
         ".mysql.env",
     ]
 )
@@ -42,6 +39,14 @@ def server_config(request):
 
     db_url = os.environ.get("DB_URL")
     print("Using DB_URL:", db_url)
+
+    # For SQLite, ensure the directory exists
+    if db_url.startswith("sqlite:///"):
+        db_path = db_url.replace("sqlite:///", "")
+        if not db_path.startswith(":memory:"):
+            db_file = Path(db_path)
+            db_file.parent.mkdir(parents=True, exist_ok=True)
+
     engine = create_engine(db_url)
     with engine.begin() as conn:
         conn.execute(text("DROP TABLE IF EXISTS llm_logs;"))
