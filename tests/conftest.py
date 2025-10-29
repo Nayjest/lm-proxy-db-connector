@@ -32,6 +32,7 @@ def get_test_params():
         ".mysql.env",
     ]
 
+
 @pytest.fixture(
     scope="session",
     params=get_test_params()
