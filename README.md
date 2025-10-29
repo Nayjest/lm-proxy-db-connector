@@ -31,7 +31,7 @@ Add the DB component to your LM-Proxy configuration:
 # config.toml
 [components.db]
 dsn = "postgresql+psycopg2://user:password@localhost:5432/mydb"
-class = "lm_proxy_db_connector.Component"
+class = "lm_proxy_db_connector.init_db"
 
 # Add database logging
 [[loggers]]
