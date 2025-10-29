@@ -25,7 +25,7 @@ class ServerFixture:
     params=[
         ".postgres.env",
         #".sqlite.env",
-        #".mysql.env",
+        ".mysql.env",
     ]
 )
 def server_config(request):
@@ -64,7 +64,7 @@ def server_config(request):
             "--debug"
         ],
     )
-    time.sleep(4)
+    time.sleep(10)
     yield ServerFixture(
         port=int(os.environ.get("PORT")),
         process=server_process,
