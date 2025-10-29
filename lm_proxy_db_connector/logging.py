@@ -5,12 +5,11 @@ from typing import Optional, Dict, Any
 from dataclasses import dataclass, field
 
 import sqlalchemy
-from sqlalchemy.exc import SQLAlchemyError
 from microcore.utils import resolve_callable
 from lm_proxy.loggers import AbstractLogWriter, BaseLogger, LogEntryTransformer
 from lm_proxy.base_types import RequestContext
 
-from . import db_session, db_engine
+from . import db, db_session
 
 
 TYPE_MAP = {
@@ -56,7 +55,7 @@ class DBLogWriter(AbstractLogWriter):
             self.columns = _DEFAULT_COLUMNS
 
         metadata = sqlalchemy.MetaData(schema=self.schema)
-        engine = db_engine()
+        engine = db().engine
         dialect = engine.dialect.name
         # Build columns
         cols = []
@@ -76,7 +75,7 @@ class DBLogWriter(AbstractLogWriter):
                 if k not in ("type", "length")
             }
             if "default" in kwargs and kwargs["default"] == "now":
-                kwargs["default"] = sqlalchemy.func.now()
+                kwargs["default"] = sqlalchemy.func.now()  # pylint: disable=not-callable
             cols.append(sqlalchemy.Column(name, col_type, **kwargs))
 
         self._table = sqlalchemy.Table(self.table_name, metadata, *cols)
@@ -84,14 +83,9 @@ class DBLogWriter(AbstractLogWriter):
             metadata.create_all(engine, checkfirst=True)
 
     def __call__(self, logged_data: dict):
-        db = db_session()
-        try:
+        with db_session() as s:
             stmt = self._table.insert().values(**logged_data)
-            db.execute(stmt)
-            db.commit()
-        except SQLAlchemyError:
-            db.rollback()
-            raise
+            s.execute(stmt)
 
 
 @dataclass
@@ -110,7 +104,7 @@ class DBLogger:
     _logger: BaseLogger = field(init=False, repr=False)
 
     def __post_init__(self):
-        mapping = dict()
+        mapping = {}
         for col_name, col_spec in self.columns.items():
             mapping[col_name] = col_spec.pop("src", col_name)
         log_writer = DBLogWriter(

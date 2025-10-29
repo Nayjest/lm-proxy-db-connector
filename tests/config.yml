@@ -76,5 +76,6 @@ loggers:
         nullable: true
 components:
   db:
-    dsn: "env:DB_URL"
-    class: "lm_proxy_db_connector.Component"
+    class: "lm_proxy_db_connector.init_db"
+    db_url: "env:DB_URL"
+
