@@ -20,14 +20,22 @@ class ServerFixture:
     db_url: str = field(default=None)
 
 
-@pytest.fixture(
-    scope="session",
-    params=[
-        #".postgres.env",
-        #".sqlite.env",
-        #".mysql.env",
+def get_test_params():
+    """Return test parameters based on environment."""
+    if os.environ.get("GITHUB_ACTIONS"):
+        return [
+            ".sqlite.mem.env",
+        ]
+    return [
+        ".postgres.env",
+        ".sqlite.env",
+        ".mysql.env",
         ".sqlite.mem.env",
     ]
+
+@pytest.fixture(
+    scope="session",
+    params=get_test_params()
 )
 def server_config(request):
     """Fixture that starts the LM-Proxy server for testing and stops it after tests complete."""
