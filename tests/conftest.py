@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from typing import Any
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
-
+from sqlalchemy.engine import make_url
 
 @dataclass
 class ServerFixture:
@@ -18,6 +18,9 @@ class ServerFixture:
     api_key: str
     model: str = field(default=None)
     db_url: str = field(default=None)
+
+
+Path(make_url("sqlite:///storage/sqlite.db").database).parent.mkdir(parents=True, exist_ok=True)
 
 
 @pytest.fixture(
@@ -36,7 +39,6 @@ def server_config(request):
     load_dotenv(shared_env_path, override=True)
     test_env_path = root / "tests" / "env" / request.param
     load_dotenv(test_env_path, override=True)
-    Path("storage").mkdir(parents=True, exist_ok=True)
 
     db_url = os.environ.get("DB_URL")
     print("Using DB_URL:", db_url)
